@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>ClutchCoach — Valorant Match Review (First One Free)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg: #050711;
+      --surface: #0c111b;
+      --surface-soft: #131726;
+      --accent: #ff4655;
+      --accent-soft: rgba(255, 70, 85, 0.15);
+      --text: #f9fafb;
+      --muted: #9ca3af;
+      --border-subtle: rgba(255, 255, 255, 0.05);
+      --radius-lg: 18px;
+      --shadow: 0 18px 38px rgba(0,0,0,0.55);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Inter", system-ui;
+      background: radial-gradient(circle at top, #151827 0, #050711 45%, #02030a 100%);
+      color: var(--text);
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .page { min-height: 100vh; }
+
+    .shell {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 32px 24px;
+    }
+
+    section {
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto 42px;
+    }
+
+    /* NAV */
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .nav-left { display: flex; gap: 10px; align-items: center; }
+    .nav-logo {
+      width: 26px;
+      height: 26px;
+      border-radius: 99px;
+      background: linear-gradient(145deg, #fca5a5, #ff4655, #7f1d1d);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .nav-logo-icon {
+      width: 12px; height: 12px; background: #050711;
+      clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+    }
+
+    .nav-title span:first-child {
+      display: block;
+      font-size: 18px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .nav-title span:last-child {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .contact-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--text);
+      background: rgba(255, 70, 85, 0.15);
+      border: 1px solid rgba(255, 70, 85, 0.35);
+      transition: transform 0.15s ease, background 0.2s ease;
+    }
+    .contact-btn:hover {
+      transform: translateY(-1px);
+      background: rgba(255, 70, 85, 0.3);
+    }
+
+    .hero {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .hero-button {
+      margin-bottom: 18px;
+      background: var(--accent);
+      border-radius: 999px;
+      border: none;
+      padding: 12px 24px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      transition: transform .1s;
+    }
+    .hero-button:hover { transform: translateY(-1px); }
+
+    .hero-title {
+      font-size: clamp(30px, 4vw, 38px);
+      margin-bottom: 12px;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+    }
+
+    .hero-title-highlight {
+      color: var(--accent);
+    }
+
+    .hero-subtitle {
+      max-width: 500px;
+      font-size: 15px;
+      margin: 0 auto;
+      color: var(--muted);
+    }
+    .hero-subtitle strong { color: var(--text); }
+
+    /* PREVIEW */
+    .preview-card {
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      background: var(--surface);
+      padding: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .preview-header {
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .preview-video {
+      border-radius: 16px;
+      overflow: hidden;
+      min-height: 360px;
+      background: #101523;
+      border: 1px solid #1d2331;
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+    }
+
+    .preview-overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(circle at 25% 15%, rgba(255,255,255,.06), transparent 60%),
+        linear-gradient(to top, rgba(0,0,0,.4), transparent 45%);
+    }
+
+    .hotspot {
+      position: absolute;
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      background: rgba(0,0,0,0.58);
+      backdrop-filter: blur(4px);
+      padding: 6px 10px;
+      font-size: 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.08);
+    }
+    .hotspot time {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .hotspot:nth-child(2) { top: 20%; left: 8%; }
+    .hotspot:nth-child(3) { top: 60%; right: 14%; }
+    .hotspot:nth-child(4) { bottom: 12%; left: 40%; }
+
+    /* VALUE POINTS */
+    .value-section {
+      margin-bottom: 40px;
+    }
+    .value-header {
+      text-align: center;
+      margin-bottom: 18px;
+    }
+    .value-header-title {
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .value-header-sub {
+      font-size: 14px;
+      color: var(--muted);
+    }
+    .value-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+    }
+
+    .value-card {
+      background: var(--surface-soft);
+      border-radius: 14px;
+      padding: 12px 14px;
+      border: 1px solid var(--border-subtle);
+      font-size: 14px;
+      color: var(--muted);
+    }
+    .value-card strong { display: block; color: var(--text); margin-bottom: 4px; }
+
+    /* FORM */
+    .form-section {
+      border-radius: var(--radius-lg);
+      background: var(--surface-soft);
+      border: 1px solid var(--border-subtle);
+      padding: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .form-header { text-align: center; margin-bottom: 14px; }
+    .form-title { font-size: 17px; font-weight: 600; }
+    .form-sub { font-size: 13px; color: var(--muted); }
+    .form-badge {
+      margin-top: 6px;
+      display: inline-block;
+      padding: 6px 14px;
+      font-size: 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    form { display: flex; flex-direction: column; gap: 14px; }
+
+    .field-label { font-size: 13px; margin-bottom: 4px; color: var(--text); }
+    .field-input,
+    .field-textarea {
+      width: 100%;
+      background: rgba(0,0,0,0.45);
+      border: 1px solid #2d3445;
+      color: var(--text);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 14px;
+    }
+    .field-textarea { min-height: 70px; resize: vertical; }
+
+    .field-hint {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .form-feedback {
+      font-size: 13px;
+      margin-top: 6px;
+      border-radius: 10px;
+      padding: 10px 12px;
+      border: 1px solid transparent;
+      display: none;
+    }
+    .form-feedback.success {
+      display: block;
+      background: rgba(34,197,94,0.08);
+      border-color: rgba(34,197,94,0.35);
+      color: #d1fae5;
+    }
+    .form-feedback.error {
+      display: block;
+      background: rgba(239,68,68,0.08);
+      border-color: rgba(248,113,113,0.4);
+      color: #fecaca;
+    }
+
+    .submit-btn {
+      background: var(--accent);
+      border: none;
+      border-radius: 999px;
+      padding: 12px 24px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+    }
+
+    .pricing-banner {
+      margin: 40px auto 0;
+      max-width: 520px;
+      text-align: center;
+      padding: 24px 28px;
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow);
+    }
+    .pricing-banner strong {
+      display: block;
+      font-size: 16px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+    .pricing-banner p {
+      margin: 6px 0;
+      font-size: 14px;
+      color: var(--muted);
+    }
+    .pricing-banner p:last-child {
+      color: var(--text);
+      font-weight: 600;
+    }
+    .pricing-cta {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 14px;
+      padding: 12px 26px;
+      border-radius: 999px;
+      border: none;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      background: var(--accent);
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      transition: transform 0.15s ease;
+    }
+    .pricing-cta:hover {
+      transform: translateY(-1px);
+    }
+
+    .footer {
+      text-align: center;
+      font-size: 11px;
+      padding: 12px;
+      color: var(--muted);
+      margin-top: 50px;
+    }
+    .highlight { color: var(--accent); }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="shell">
+
+      <!-- Navigation -->
+      <header class="nav">
+        <div class="nav-left">
+          <div class="nav-logo"><div class="nav-logo-icon"></div></div>
+          <div class="nav-title">
+            <span>ClutchCoach</span>
+            <span>Valorant Video Review</span>
+          </div>
+        </div>
+        <a class="contact-btn" href="/contact">Contact Me</a>
+      </header>
+
+      <!-- Hero -->
+      <section class="hero">
+        <button class="hero-button" id="heroUploadBtn">Upload Your Match</button>
+
+        <h1 class="hero-title">
+          Upload a Valorant match.<br />
+          Get a <span class="hero-title-highlight">clear breakdown</span>.
+        </h1>
+
+        <p class="hero-subtitle">
+          Share your match link (YouTube, Vimeo, Twitch, or Google Drive). I watch the whole thing and send back an annotated file + notes that highlight what you won, what you threw, and what to fix next.
+        </p>
+      </section>
+
+      <!-- Cinematic Preview -->
+      <section class="preview-card">
+        <div class="preview-header">
+          <div>
+            <div style="font-size:15px;font-weight:600">What you receive</div>
+            <div style="font-size:13px;color:var(--muted)">
+            Your video with timestamped advice along with some visual guides.
+            </div>
+          </div>
+        </div>
+
+        <div class="preview-video">
+          <div class="preview-overlay"></div>
+
+          <div class="hotspot"><time>8:54</time> Solo peek — wait for Sage swing</div>
+          <div class="hotspot"><time>21:03</time> Wall wasted · no info gain</div>
+          <div class="hotspot"><time>31:12</time> Spike down — exposed crossfire</div>
+        </div>
+      </section>
+
+      <!-- Value Points -->
+      <section class="value-section">
+        <div class="value-header">
+          <div class="value-header-title">Examples of what I review</div>
+          <!-- <div class="value-header-sub">I'll watch your video and make actual annotations/comments on specific frames of the video so that you can easily see how your actions made an impact.</div> -->
+        </div>
+
+        <div class="value-row">
+          <div class="value-card">
+            <strong>Crosshair placement</strong>
+            e.g. Crosshair was too close to the wall when holding tight angle with no cover.
+          </div>
+          <div class="value-card">
+            <strong>Smarter fights</strong>
+            e.g. You took a 1 v 3 with just a sheriff when you knew your team was rotating - you should've waited to make contact.
+          </div>
+          <div class="value-card">
+            <strong>How to use Utility</strong>
+            e.g. You Sova dart into B site over hookah but you always miss and the enemy team knows you're there. Why?
+          </div>
+        </div>
+      </section>
+
+      <!-- Form -->
+      <section class="form-section" id="formSection">
+        <div class="form-header">
+          <div class="form-title">Send your match</div>
+          <div class="form-sub">I'll watch the entire game and send you it back annotated within 48 hours.</div>
+          <span class="form-badge">Your first full-game review is free</span>
+        </div>
+
+        <form id="reviewForm" novalidate>
+          <div>
+            <label class="field-label" for="videoLink">Match link</label>
+            <input class="field-input" type="url" id="videoLink" name="videoLink" placeholder="https://youtu.be/your-match" required />
+            <div class="field-hint">Only links (YouTube, Vimeo, Twitch, Google Drive). I'll send the annotated file back.</div>
+          </div>
+
+          <div>
+            <label class="field-label" for="contactInfo">Where should I send it?</label>
+            <input class="field-input" type="text" id="contactInfo" name="contact" placeholder="Email or Discord (e.g. clutch#1337)" required />
+          </div>
+
+          <div>
+            <label class="field-label" for="reviewNotes">Anything specific to review?</label>
+            <textarea class="field-textarea" id="reviewNotes" name="notes" placeholder="Optional (e.g. entries, rotates, crosshair)"></textarea>
+          </div>
+
+          <div id="formFeedback" class="form-feedback"></div>
+
+          <button type="submit" class="submit-btn">Upload Your Match</button>
+        </form>
+      </section>
+
+      <div class="pricing-banner">
+        <strong>Your first full-game review is free</strong>
+        <p>If you loved it, subscribe for unlimited reviews or pay per match whenever you need it.</p>
+        <button class="pricing-cta" type="button" onclick="window.open('https://example.com/subscribe','_blank')">
+          Subscribe for Unlimited Reviews
+        </button>
+      </div>
+
+    </div>
+
+    <footer class="footer">
+      Not affiliated with Riot Games. Become better without becoming sweaty.
+      <span class="highlight">Play smarter.</span>
+    </footer>
+  </div>
+
+    <script>
+      const heroBtn = document.getElementById("heroUploadBtn");
+      if (heroBtn) {
+        heroBtn.addEventListener("click", () => {
+          document.getElementById("formSection").scrollIntoView({ behavior: "smooth" });
+        });
+      }
+
+      const SUBMIT_ENDPOINT = "https://formspree.io/f/xpwvyape"; 
+      const ENDPOINT_CONFIGURED =
+        typeof SUBMIT_ENDPOINT === "string" &&
+        SUBMIT_ENDPOINT.length > 0 &&
+        !SUBMIT_ENDPOINT.includes("YOUR_FORM_ID");
+      const reviewForm = document.getElementById("reviewForm");
+      const videoLinkInput = document.getElementById("videoLink");
+      const contactInput = document.getElementById("contactInfo");
+      const notesInput = document.getElementById("reviewNotes");
+      const feedback = document.getElementById("formFeedback");
+      const submitBtn = reviewForm?.querySelector(".submit-btn");
+      const SUPPORTED_LINK_HOSTS = [
+        "youtube.com",
+        "youtu.be",
+        "vimeo.com",
+        "twitch.tv",
+        "drive.google.com",
+        "docs.google.com"
+      ];
+      const clearFeedback = () => {
+        if (feedback) {
+          feedback.textContent = "";
+          feedback.className = "form-feedback";
+        }
+      };
+
+      const showFeedback = (type, message) => {
+        if (!feedback) return;
+        feedback.textContent = message;
+        feedback.className = `form-feedback ${type}`;
+      };
+
+      const isSupportedLink = (value) => {
+        try {
+          const { hostname } = new URL(value);
+          const normalized = hostname.toLowerCase().replace(/^www\./, "");
+          return SUPPORTED_LINK_HOSTS.some((host) => normalized.endsWith(host));
+        } catch (error) {
+          return false;
+        }
+      };
+
+      const sendSubmission = async ({ link, contact, notes }) => {
+        if (!ENDPOINT_CONFIGURED) {
+          // Demo mode: surface payload so it's easy to wire up a backend later.
+          console.info("Review submitted (demo mode):", { link, contact, notes });
+          await new Promise((resolve) => setTimeout(resolve, 800));
+          return { ok: true };
+        }
+
+        const formData = new FormData();
+        if (link) formData.append("matchLink", link);
+        formData.append("contact", contact);
+        formData.append("notes", notes);
+        formData.append("_subject", "New Valorant review submission");
+
+        const response = await fetch(SUBMIT_ENDPOINT, {
+          method: "POST",
+          body: formData,
+          headers: {
+            Accept: "application/json"
+          }
+        });
+
+        if (!response.ok) {
+          const errorBody = await response.json().catch(() => ({}));
+          const errorMessage = errorBody?.errors?.[0]?.message || "Upload failed";
+          throw new Error(errorMessage);
+        }
+        return response;
+      };
+
+      reviewForm?.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        clearFeedback();
+
+        const linkValue = (videoLinkInput?.value || "").trim();
+        const contactValue = (contactInput?.value || "").trim();
+        const notesValue = (notesInput?.value || "").trim();
+
+        if (!linkValue) {
+          showFeedback("error", "Paste your match link (YouTube, Vimeo, Twitch, or Google Drive).");
+          videoLinkInput?.focus();
+          return;
+        }
+
+        if (linkValue && !isSupportedLink(linkValue)) {
+          showFeedback("error", "Only YouTube, Vimeo, Twitch, or Google Drive links are accepted.");
+          return;
+        }
+
+        if (!contactValue) {
+          showFeedback("error", "Let me know where to send your review (email or Discord).");
+          contactInput?.focus();
+          return;
+        }
+
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.textContent = "Sending...";
+        }
+
+        try {
+          await sendSubmission({
+            link: linkValue,
+            contact: contactValue,
+            notes: notesValue
+          });
+
+          reviewForm.reset();
+          showFeedback(
+            "success",
+            ENDPOINT_CONFIGURED
+              ? "Upload received! I'll watch your match and reply soon."
+              : "Captured! Replace YOUR_FORM_ID with the real Formspree ID to send these automatically."
+          );
+        } catch (error) {
+          console.error(error);
+          showFeedback("error", "Something went wrong while uploading. Please try again.");
+        } finally {
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = "Upload Your Match";
+          }
+        }
+      });
+    </script>
+</body>
+</html>
