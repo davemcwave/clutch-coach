@@ -60,15 +60,17 @@
 
     .nav-left { display: flex; gap: 10px; align-items: center; }
     .nav-logo {
-      width: 26px;
-      height: 26px;
-      border-radius: 99px;
-      background: linear-gradient(145deg, #fca5a5, #ff4655, #7f1d1d);
-      display: flex; align-items: center; justify-content: center;
+      width: 42px;
+      height: 42px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
-    .nav-logo-icon {
-      width: 12px; height: 12px; background: #050711;
-      clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+    .nav-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
     }
 
     .nav-title span:first-child {
@@ -108,11 +110,15 @@
 
     .hero {
       text-align: center;
-      margin-bottom: 40px;
+      margin-bottom: 56px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
     }
 
     .hero-button {
-      margin-bottom: 18px;
+      margin: 18px 0 0;
       background: var(--accent);
       border-radius: 999px;
       border: none;
@@ -231,6 +237,40 @@
       color: var(--muted);
     }
     .value-card strong { display: block; color: var(--text); margin-bottom: 4px; }
+
+    .fit-cta {
+      margin-top: 28px;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      background: linear-gradient(120deg, rgba(255, 70, 85, 0.25), rgba(15,20,39,0.9));
+      padding: 18px 22px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .fit-cta-text {
+      font-size: 15px;
+      color: var(--text);
+      font-weight: 600;
+    }
+    .fit-cta-text span {
+      color: var(--muted);
+      font-weight: 400;
+      display: block;
+      font-size: 13px;
+    }
+    .fit-cta-button {
+      padding: 10px 22px;
+      border-radius: 999px;
+      border: none;
+      font-size: 13px;
+      font-weight: 600;
+      background: var(--accent);
+      color: var(--text);
+      box-shadow: var(--shadow);
+    }
 
     /* FORM */
     .form-section {
@@ -370,7 +410,9 @@
       <!-- Navigation -->
       <header class="nav">
         <div class="nav-left">
-          <div class="nav-logo"><div class="nav-logo-icon"></div></div>
+          <a class="nav-logo" href="/">
+            <img src="images/clutch-coach-logo.png" alt="ClutchCoach logo" />
+          </a>
           <div class="nav-title">
             <span>ClutchCoach</span>
             <span>Valorant Video Review</span>
@@ -381,7 +423,6 @@
 
       <!-- Hero -->
       <section class="hero">
-        <button class="hero-button" id="heroUploadBtn">Upload Your Match</button>
 
         <h1 class="hero-title">
           Upload a Valorant match.<br />
@@ -389,8 +430,10 @@
         </h1>
 
         <p class="hero-subtitle">
-          Share your match link (YouTube, Vimeo, Twitch, or Google Drive). I watch the whole thing and send back an annotated file + notes that highlight what you won, what you threw, and what to fix next.
+          Share your match link (YouTube, Vimeo, Twitch, or Google Drive). I watch the whole thing and send back an annotated video + notes that highlight what you won, what you threw, and what to fix next.
         </p>
+
+        <button class="hero-button" id="heroUploadBtn">Upload Your Match</button>
       </section>
 
       <!-- Cinematic Preview -->
@@ -434,6 +477,14 @@
             e.g. You Sova dart into B site over hookah but you always miss and the enemy team knows you're there. Why?
           </div>
         </div>
+
+        <div class="fit-cta">
+          <div class="fit-cta-text">
+            Not sure if this service is for you?
+            <span>Built for Platinum-and-below players who want a coach-level review.</span>
+          </div>
+          <a class="fit-cta-button" href="/is-clutch-coach-for-me">See if you’re the right fit</a>
+        </div>
       </section>
 
       <!-- Form -->
@@ -470,7 +521,7 @@
       <div class="pricing-banner">
         <strong>Your first full-game review is free</strong>
         <p>If you loved it, subscribe for unlimited reviews or pay per match whenever you need it.</p>
-        <button class="pricing-cta" type="button" onclick="window.open('https://example.com/subscribe','_blank')">
+        <button class="pricing-cta" type="button" onclick="window.open('https://clutchcoach.lemonsqueezy.com/','_blank')">
           Subscribe for Unlimited Reviews
         </button>
       </div>
