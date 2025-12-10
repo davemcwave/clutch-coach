@@ -71,6 +71,11 @@
       text-transform: uppercase;
       color: var(--muted);
     }
+    .nav-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
     .contact-btn {
       padding: 8px 16px;
       border-radius: 999px;
@@ -80,6 +85,17 @@
       font-size: 12px;
       font-weight: 600;
       letter-spacing: 0.05em;
+    }
+    .products-btn {
+      padding: 8px 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.08);
+      text-transform: uppercase;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      color: var(--text);
     }
     .hero {
       text-align: center;
@@ -191,7 +207,10 @@
             <span>Valorant Video Review</span>
           </div>
         </div>
-        <a class="contact-btn" href="/contact">Contact</a>
+        <div class="nav-actions">
+          <a class="contact-btn" href="/contact">Contact Me</a>
+          <a class="products-btn" href="/products">Products</a>
+        </div>
       </header>
 
       <section class="hero">

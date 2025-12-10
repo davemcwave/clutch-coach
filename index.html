@@ -73,6 +73,12 @@
       display: block;
     }
 
+    .nav-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
     .nav-title span:first-child {
       display: block;
       font-size: 18px;
@@ -106,6 +112,26 @@
     .contact-btn:hover {
       transform: translateY(-1px);
       background: rgba(255, 70, 85, 0.3);
+    }
+
+    .products-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: transform 0.15s ease, background 0.2s ease;
+    }
+    .products-btn:hover {
+      transform: translateY(-1px);
+      background: rgba(255, 255, 255, 0.2);
     }
 
     .hero {
@@ -418,7 +444,10 @@
             <span>Valorant Video Review</span>
           </div>
         </div>
-        <a class="contact-btn" href="/contact">Contact Me</a>
+        <div class="nav-actions">
+          <a class="contact-btn" href="/contact">Contact Me</a>
+          <a class="products-btn" href="/products">Products</a>
+        </div>
       </header>
 
       <!-- Hero -->
