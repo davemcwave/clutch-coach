@@ -61,7 +61,7 @@
       display: flex;
       flex-direction: column;
       text-decoration: none;
-      color: inherit;
+      color: var(--text);
     }
     .nav-title span:first-child {
       display: block;
@@ -198,7 +198,32 @@
       padding: 24px 12px;
       margin-top: auto;
     }
-  </style>
+      @media (max-width: 640px) {
+      .nav {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+      .nav-actions {
+        width: 100%;
+        gap: 8px;
+      }
+      .nav-actions a {
+        flex: 1;
+        justify-content: center;
+      }
+      .hero {
+        gap: 10px;
+      }
+      .hero-steps {
+        flex-direction: column;
+      }
+      .hero-step {
+        flex: 1 1 auto;
+      }
+    }
+
+</style>
 </head>
 <body>
   <div class="page">
@@ -222,7 +247,7 @@
       <section class="hero">
         <h1>Is ClutchCoach for you?</h1>
         <p>
-          I'm not here for pros. I help motivated ranked players - usually Platinum and below - who want a coach-level breakdown through videos only.
+          I'm not here for pros. I help motivated players who are trying to grind through the lower ranks and improve their ranked play. I specifically target players look for video review who are in these ranks.
         </p>
         <div class="rank-badges">
           <span class="rank-badge iron">Iron</span>

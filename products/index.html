@@ -61,7 +61,7 @@
       display: flex;
       flex-direction: column;
       text-decoration: none;
-      color: inherit;
+      color: var(--text);
     }
     .nav-title span:first-child {
       display: block;
@@ -116,63 +116,62 @@
       color: var(--muted);
       font-size: 15px;
     }
-    .product-list {
+    .product-stack {
       display: flex;
       flex-direction: column;
-      gap: 18px;
+      gap: 14px;
     }
-    .product-card {
+    .product-tier {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 20px;
       background: var(--surface);
       border-radius: var(--radius-lg);
       border: 1px solid var(--border-subtle);
-      padding: 22px;
       box-shadow: var(--shadow);
     }
-    .product-header {
+    .product-tier.highlight {
+      border-color: rgba(255, 70, 85, 0.35);
+      background: linear-gradient(120deg, rgba(255, 70, 85, 0.18), rgba(12,17,27,0.95));
+    }
+    .product-main {
       display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 12px;
+      flex-direction: column;
+      gap: 6px;
+      max-width: 560px;
     }
     .product-name {
       font-size: 18px;
       font-weight: 600;
     }
-    .product-status {
-      font-size: 12px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: #34d399;
-      border: 1px solid rgba(52,211,153,0.4);
-      border-radius: 999px;
-      padding: 4px 10px;
-    }
     .product-price {
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 600;
       color: var(--accent);
-      margin-bottom: 12px;
     }
     .product-desc {
       color: var(--muted);
       font-size: 14px;
-      line-height: 1.5;
-      margin-bottom: 18px;
+      line-height: 1.45;
     }
-    .product-actions {
-      display: flex;
-      justify-content: flex-end;
-    }
-    .copy-btn {
-      padding: 10px 20px;
+    .product-action a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 22px;
       border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.2);
-      background: rgba(255,255,255,0.08);
-      color: var(--text);
       font-size: 13px;
       font-weight: 600;
-      cursor: pointer;
+      color: var(--text);
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    .product-tier.highlight .product-action a {
+      background: var(--accent);
+      border-color: rgba(255, 70, 85, 0.8);
     }
     .footer {
       text-align: center;
@@ -181,7 +180,32 @@
       padding: 24px 12px;
       margin-top: auto;
     }
-  </style>
+      @media (max-width: 640px) {
+      .nav {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+      .nav-actions {
+        width: 100%;
+        gap: 8px;
+      }
+      .nav-actions a {
+        flex: 1;
+        justify-content: center;
+      }
+      .hero {
+        gap: 10px;
+      }
+      .hero-steps {
+        flex-direction: column;
+      }
+      .hero-step {
+        flex: 1 1 auto;
+      }
+    }
+
+</style>
 </head>
 <body>
   <div class="page">
@@ -207,59 +231,56 @@
         <p>Pick the product that fits your Valorant review needs.</p>
       </section>
 
-      <section class="product-list">
-        <article class="product-card">
-          <div class="product-header">
-            <div class="product-name">First Valorant Match Review - 1 Video</div>
-            <div class="product-status">Active</div>
+      <section class="product-stack">
+        <article class="product-tier highlight">
+          <div class="product-main">
+            <div class="product-name">First Valorant Match Review — Free</div>
+            <div class="product-price">$0.00 USD</div>
+            <p class="product-desc">
+              Send me your first match for free. I'll review the entire VOD and return it annotated so you see exactly how the service works before paying.
+            </p>
           </div>
-          <div class="product-price">$0.00 USD</div>
-          <p class="product-desc">
-            Send me your first match for free. I'll review the entire VOD and return it annotated so you see exactly how the service works before paying.
-          </p>
-          <div class="product-actions">
-            <a class="copy-btn" href="/#formSection">Submit First Video</a>
-          </div>
-        </article>
-
-        <article class="product-card">
-          <div class="product-header">
-            <div class="product-name">Valorant Video Review - 1 Video</div>
-            <div class="product-status">Active</div>
-          </div>
-          <div class="product-price">$8.00 USD</div>
-          <p class="product-desc">
-            Submit one gameplay video and get a detailed, timestamped breakdown of strategy, aim, positioning, and decision-making. Receive expert annotations, actionable takeaways, and a tangible list of improvements - perfect for single reviews or trying the service.
-          </p>
-          <div class="product-actions">
-            <a class="copy-btn" href="https://buy.stripe.com/8x2dRb7VI5an3kPadWe7m01" target="_blank" rel="noopener">View Product</a>
+          <div class="product-action">
+            <a href="/#formSection">Submit</a>
           </div>
         </article>
 
-        <article class="product-card">
-          <div class="product-header">
-            <div class="product-name">Valorant Video Review - 3 Videos</div>
-            <div class="product-status">Active</div>
+        <article class="product-tier">
+          <div class="product-main">
+            <div class="product-name">Valorant Video Review — 1 Video</div>
+            <div class="product-price">$8.00 USD</div>
+            <p class="product-desc">
+              Submit one gameplay video and get a detailed, timestamped breakdown of strategy, aim, positioning, and decision-making. Receive expert annotations, actionable takeaways, and a tangible list of improvements.
+            </p>
           </div>
-          <div class="product-price">$12.00 USD</div>
-          <p class="product-desc">
-            Submit three gameplay videos and get expert feedback with timestamps that break down your strategy, aim, and decision-making. Every review includes clear, actionable steps so you know exactly what to practice next.
-          </p>
-          <div class="product-actions">
-            <a class="copy-btn" href="https://buy.stripe.com/fZu8wR8ZMbyLg7B2Lue7m02" target="_blank" rel="noopener">View Product</a>
+          <div class="product-action">
+            <a href="https://buy.stripe.com/8x2dRb7VI5an3kPadWe7m01" target="_blank" rel="noopener">Buy</a>
           </div>
         </article>
-        <article class="product-card">
-          <div class="product-header">
+
+        <article class="product-tier">
+          <div class="product-main">
+            <div class="product-name">Valorant Video Review — 3 Videos</div>
+            <div class="product-price">$12.00 USD</div>
+            <p class="product-desc">
+              Submit three gameplay videos and get expert feedback with timestamps that break down your strategy, aim, and decision-making. Every review includes clear action items so you know exactly what to practice next.
+            </p>
+          </div>
+          <div class="product-action">
+            <a href="https://buy.stripe.com/fZu8wR8ZMbyLg7B2Lue7m02" target="_blank" rel="noopener">Buy</a>
+          </div>
+        </article>
+
+        <article class="product-tier">
+          <div class="product-main">
             <div class="product-name">Unlimited Valorant Video Reviews</div>
-            <div class="product-status">Active</div>
+            <div class="product-price">$15.00 USD / month</div>
+            <p class="product-desc">
+              Submit unlimited gameplay clips and receive detailed, timestamped feedback every time. Includes ongoing progress tracking so you keep improving between matches.
+            </p>
           </div>
-          <div class="product-price">$15.00 USD / month</div>
-          <p class="product-desc">
-            Submit unlimited gameplay clips and receive detailed, timestamped feedback every time. Each review includes expert annotations, actionable insights, and ongoing progress tracking so you keep improving between matches.
-          </p>
-          <div class="product-actions">
-            <a class="copy-btn" href="https://buy.stripe.com/4gM00la3Q32fcVp2Lue7m00" target="_blank" rel="noopener">View Product</a>
+          <div class="product-action">
+            <a href="https://buy.stripe.com/4gM00la3Q32fcVp2Lue7m00" target="_blank" rel="noopener">Subscribe</a>
           </div>
         </article>
       </section>

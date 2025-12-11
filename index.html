@@ -77,7 +77,7 @@
       display: flex;
       flex-direction: column;
       text-decoration: none;
-      color: inherit;
+      color: var(--text);
     }
     .nav-actions {
       display: flex;
@@ -174,13 +174,64 @@
       color: var(--accent);
     }
 
-    .hero-subtitle {
-      max-width: 500px;
-      font-size: 15px;
+    .hero-steps {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      width: 100%;
+      max-width: 720px;
       margin: 0 auto;
-      color: var(--muted);
     }
-    .hero-subtitle strong { color: var(--text); }
+    .hero-step {
+      flex: 1 1 200px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.04);
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.4;
+    }
+    .hero-step-number {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 2px solid var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: var(--accent);
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+    @media (max-width: 640px) {
+      .nav {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+      .nav-actions {
+        width: 100%;
+        gap: 8px;
+      }
+      .nav-actions a {
+        flex: 1;
+        justify-content: center;
+      }
+      .hero {
+        gap: 10px;
+      }
+      .hero-steps {
+        flex-direction: column;
+      }
+      .hero-step {
+        flex: 1 1 auto;
+      }
+    }
 
     /* PREVIEW */
     .preview-card {
@@ -203,7 +254,9 @@
       min-height: 360px;
       background: #101523;
       border: 1px solid #1d2331;
-      display: flex; align-items: center; justify-content: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       position: relative;
     }
 
@@ -235,6 +288,18 @@
     .hotspot:nth-child(2) { top: 20%; left: 8%; }
     .hotspot:nth-child(3) { top: 60%; right: 14%; }
     .hotspot:nth-child(4) { bottom: 12%; left: 40%; }
+    .preview-screen {
+      width: 100%;
+      height: 100%;
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    .preview-video video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
 
     /* VALUE POINTS */
     .value-section {
@@ -464,9 +529,20 @@
           Get a <span class="hero-title-highlight">clear breakdown</span>.
         </h1>
 
-        <p class="hero-subtitle">
-          Share your match link (YouTube, Vimeo, Twitch, or Google Drive). I watch the whole thing and send back an annotated video + notes that highlight what you won, what you threw, and what to fix next.
-        </p>
+        <div class="hero-steps">
+          <div class="hero-step">
+            <span class="hero-step-number">1</span>
+            <span>Record a full ranked match and toss the VOD on YouTube, Twitch, Drive, or anywhere I can watch.</span>
+          </div>
+          <div class="hero-step">
+            <span class="hero-step-number">2</span>
+            <span>I review every round for your timing, utility, fights, rotates, everything I can see. And I comment the key mistakes and clutch moments.</span>
+          </div>
+          <div class="hero-step">
+            <span class="hero-step-number">3</span>
+            <span>You get an annotated video plus notes on what to keep, what to fix, and what to practice for your future matches.</span>
+          </div>
+        </div>
 
         <button class="hero-button" id="heroUploadBtn">Upload Your Match</button>
       </section>
@@ -484,10 +560,13 @@
 
         <div class="preview-video">
           <div class="preview-overlay"></div>
-
-          <div class="hotspot"><time>8:54</time> Solo peek — wait for Sage swing</div>
-          <div class="hotspot"><time>21:03</time> Wall wasted · no info gain</div>
-          <div class="hotspot"><time>31:12</time> Spike down — exposed crossfire</div>
+          <div class="preview-screen">
+            <video autoplay muted loop playsinline poster="images/preview-thumb.jpg">
+              <source src="videos/valorant-review-demo.mp4" type="video/mp4" />
+              <source src="videos/valorant-review-demo.webm" type="video/webm" />
+              Your browser does not support the video tag.
+            </video>
+          </div>
         </div>
       </section>
 
