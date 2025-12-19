@@ -248,6 +248,22 @@
       justify-content: space-between;
     }
 
+    .preview-carousel {
+      position: relative;
+    }
+    .carousel-window {
+      overflow: hidden;
+    }
+    .carousel-track {
+      display: flex;
+      transition: transform 0.4s ease;
+      will-change: transform;
+    }
+    .preview-slide {
+      width: 100%;
+      flex-shrink: 0;
+      padding: 2px;
+    }
     .preview-video {
       border-radius: 16px;
       overflow: hidden;
@@ -299,6 +315,50 @@
       height: 100%;
       object-fit: cover;
       display: block;
+    }
+    .carousel-controls {
+      position: absolute;
+      top: 50%;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      pointer-events: none;
+      transform: translateY(-50%);
+    }
+    .carousel-btn {
+      pointer-events: auto;
+      background: rgba(0,0,0,0.55);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: var(--text);
+      border-radius: 50%;
+      width: 38px;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+    .carousel-btn:hover {
+      background: rgba(0,0,0,0.75);
+    }
+    .carousel-dots {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin-top: 12px;
+    }
+    .carousel-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.25);
+      border: none;
+      cursor: pointer;
+      padding: 0;
+    }
+    .carousel-dot.is-active {
+      background: var(--accent);
     }
 
     /* VALUE POINTS */
@@ -558,14 +618,55 @@
           </div>
         </div>
 
-        <div class="preview-video">
-          <div class="preview-overlay"></div>
-          <div class="preview-screen">
-            <video autoplay muted loop playsinline poster="images/preview-thumb.jpg">
-              <source src="videos/valorant-review-demo.mp4" type="video/mp4" />
-              <source src="videos/valorant-review-demo.webm" type="video/webm" />
-              Your browser does not support the video tag.
-            </video>
+        <div class="preview-carousel" data-carousel>
+          <div class="carousel-window">
+            <div class="carousel-track">
+              <div class="preview-slide is-active">
+                <div class="preview-video">
+                  <div class="preview-overlay"></div>
+                  <div class="preview-screen">
+                    <video autoplay muted loop playsinline data-slide-video>
+                      <source src="videos/Ms8l15WBF6.mp4" type="video/mp4" />
+                      <source src="videos/valorant-review-demo.webm" type="video/webm" />
+                      Your browser does not support the video tag.
+                    </video>
+                  </div>
+                </div>
+              </div>
+              <div class="preview-slide">
+                <div class="preview-video">
+                  <div class="preview-overlay"></div>
+                  <div class="preview-screen">
+                    <video autoplay muted loop playsinline data-slide-video>
+                      <source src="videos/7e3UPHF4EL.mp4" type="video/mp4" />
+                      <source src="videos/valorant-review-demo.webm" type="video/webm" />
+                      Your browser does not support the video tag.
+                    </video>
+                  </div>
+                </div>
+              </div>
+              <div class="preview-slide">
+                <div class="preview-video">
+                  <div class="preview-overlay"></div>
+                  <div class="preview-screen">
+                    <video autoplay muted loop playsinline data-slide-video>
+                      <source src="videos/QsNAdFnep4.mp4" type="video/mp4" />
+                      <source src="videos/valorant-review-demo.webm" type="video/webm" />
+                      Your browser does not support the video tag.
+                    </video>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="carousel-controls">
+            <button class="carousel-btn" type="button" data-carousel-prev aria-label="Previous preview">&lsaquo;</button>
+            <button class="carousel-btn" type="button" data-carousel-next aria-label="Next preview">&rsaquo;</button>
+          </div>
+          <div class="carousel-dots" role="tablist">
+            <button class="carousel-dot is-active" type="button" data-carousel-dot="0" aria-label="Show preview 1"></button>
+            <button class="carousel-dot" type="button" data-carousel-dot="1" aria-label="Show preview 2"></button>
+            <button class="carousel-dot" type="button" data-carousel-dot="2" aria-label="Show preview 3"></button>
           </div>
         </div>
       </section>
@@ -782,6 +883,60 @@
           }
         }
       });
+
+      const setupPreviewCarousel = () => {
+        const carousel = document.querySelector("[data-carousel]");
+        if (!carousel) return;
+
+        const track = carousel.querySelector(".carousel-track");
+        const slides = Array.from(carousel.querySelectorAll(".preview-slide"));
+        const dots = Array.from(carousel.querySelectorAll("[data-carousel-dot]"));
+        const prevBtn = carousel.querySelector("[data-carousel-prev]");
+        const nextBtn = carousel.querySelector("[data-carousel-next]");
+        const videos = Array.from(carousel.querySelectorAll("[data-slide-video]"));
+        let currentIndex = 0;
+
+        const focusSlide = (index) => {
+          const total = slides.length;
+          if (!total) return;
+          currentIndex = (index + total) % total;
+          const offset = currentIndex * -100;
+          if (track) {
+            track.style.transform = `translateX(${offset}%)`;
+          }
+          slides.forEach((slide, idx) => {
+            slide.classList.toggle("is-active", idx === currentIndex);
+          });
+          dots.forEach((dot, idx) => {
+            dot.classList.toggle("is-active", idx === currentIndex);
+          });
+          videos.forEach((video, idx) => {
+            if (idx === currentIndex) {
+              const playAttempt = video.play();
+              if (playAttempt && typeof playAttempt.catch === "function") {
+                playAttempt.catch(() => {});
+              }
+            } else {
+              video.pause();
+              video.currentTime = 0;
+            }
+          });
+        };
+
+        prevBtn?.addEventListener("click", () => focusSlide(currentIndex - 1));
+        nextBtn?.addEventListener("click", () => focusSlide(currentIndex + 1));
+        dots.forEach((dot) => {
+          const idx = parseInt(dot.getAttribute("data-carousel-dot"), 10);
+          if (Number.isInteger(idx)) {
+            dot.addEventListener("click", () => focusSlide(idx));
+          }
+        });
+
+        focusSlide(0);
+      };
+
+      setupPreviewCarousel();
     </script>
 </body>
 </html>
+

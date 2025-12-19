@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>ClipCoach — Timestamped Valorant Notes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0b0f1a;
+      --surface: #141b2c;
+      --surface-soft: #1d2538;
+      --accent: #ff4655;
+      --text: #eef2ff;
+      --muted: #9ca3c9;
+      --border: rgba(255,255,255,0.08);
+      --radius: 16px;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: linear-gradient(180deg, #050712 0%, #0b0f1a 40%, #050712 100%);
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--text);
+    }
+    a { color: inherit; text-decoration: none; }
+    header {
+      padding: 18px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      background: rgba(5,7,18,0.6);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(12px);
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .logo-mark {
+      width: 36px;
+      height: 36px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #ff8292, #ff4655);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+    main {
+      padding: 32px;
+      max-width: 1560px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: minmax(0, 4.2fr) minmax(0, 1.1fr);
+      gap: 26px;
+      align-items: start;
+    }
+    @media (max-width: 960px) {
+      main { grid-template-columns: 1fr; }
+    }
+    .panel {
+      background: var(--surface);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      box-shadow: 0 18px 55px rgba(0,0,0,0.4);
+      padding: 20px;
+    }
+    label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      display: block;
+      margin-bottom: 6px;
+    }
+    input[type="text"] {
+      width: 100%;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      font-size: 14px;
+      padding: 12px 14px;
+    }
+    button, .button {
+      border: none;
+      border-radius: 999px;
+      padding: 10px 20px;
+      background: var(--accent);
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 13px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    button.secondary, .button.secondary {
+      background: rgba(255,255,255,0.08);
+      color: var(--text);
+    }
+    .video-shell {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: black;
+      margin-top: 18px;
+    }
+    #playerContainer {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+    #playerContainer iframe {
+      width: 100% !important;
+      height: 100% !important;
+      border: none;
+      position: absolute;
+      inset: 0;
+    }
+    canvas#drawLayer {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+    .player-placeholder {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 0 32px;
+      font-size: 15px;
+      color: var(--muted);
+      background: radial-gradient(circle at top, rgba(15,18,32,0.92), rgba(5,7,18,0.95));
+      z-index: 2;
+      transition: opacity 0.2s ease, visibility 0.2s ease;
+    }
+    .player-placeholder.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .video-controls {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+    textarea {
+      width: 100%;
+      min-height: 70px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      font-size: 14px;
+      padding: 12px;
+      resize: vertical;
+    }
+    .note-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .note-search {
+      margin-bottom: 12px;
+    }
+    .note-search input {
+      width: 100%;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.03);
+      color: var(--text);
+      padding: 10px 12px;
+      font-size: 13px;
+    }
+    .note {
+      padding: 14px;
+      border-radius: 14px;
+      background: var(--surface-soft);
+      border: 1px solid rgba(255,255,255,0.05);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .note.active {
+      border-color: rgba(255,70,85,0.5);
+      box-shadow: 0 0 0 1px rgba(255,70,85,0.4);
+    }
+    .note-header {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-weight: 600;
+    }
+    .note-header span {
+      flex: 0 0 auto;
+      min-width: 60px;
+    }
+    .note-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .note-actions button {
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 11px;
+    }
+    .note-comments {
+      margin-top: 8px;
+    }
+    .note-comments-toggle {
+      font-size: 11px;
+      border-radius: 8px;
+      padding: 6px 12px;
+    }
+    .note-comments-body {
+      margin-top: 8px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.05);
+      background: rgba(255,255,255,0.02);
+      padding: 10px;
+    }
+    .note-comments-body.collapsed {
+      display: none;
+    }
+    .comment-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+    .comment {
+      font-size: 13px;
+      color: var(--text);
+      background: rgba(255,255,255,0.02);
+      border-radius: 8px;
+      padding: 6px 8px;
+    }
+    .comment-empty {
+      color: var(--muted);
+      background: transparent;
+      border: 1px dashed rgba(255,255,255,0.1);
+    }
+    .note-comments-body textarea {
+      min-height: 50px;
+      font-size: 13px;
+    }
+    .share-row {
+      margin-top: 16px;
+      display: flex;
+      gap: 10px;
+    }
+    .share-link {
+      flex: 1;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.03);
+      color: var(--text);
+      padding: 10px 12px;
+      font-size: 13px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .draw-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-top: 12px;
+      align-items: center;
+    }
+    .draw-controls .draw-color,
+    .draw-controls .thickness-control {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .draw-controls .thickness-control input[type="range"] {
+      width: 160px;
+    }
+    .draw-controls .note-label {
+      flex-basis: 100%;
+    }
+    .draw-controls label {
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <span class="logo-mark">✎</span>
+      ClipCoach
+    </div>
+    <div class="nav-actions">
+      <a href="/" class="button secondary">Back to Landing</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="panel">
+      <label for="videoUrl">Video URL (YouTube)</label>
+      <input type="text" id="videoUrl" placeholder="https://www.youtube.com/watch?v=..." />
+      <div class="video-controls" style="margin-top:12px;">
+        <button id="loadVideo">Load Video</button>
+        <button class="secondary" id="markStart">Mark Timestamp</button>
+        <button class="secondary" id="toggleDraw">Draw Mode Off</button>
+        <button class="secondary" id="clearCanvas">Clear Draw</button>
+      </div>
+      <div class="video-shell" id="videoShell">
+        <div id="playerContainer"></div>
+        <canvas id="drawLayer"></canvas>
+        <div class="player-placeholder" id="playerPlaceholder">
+          Drop a YouTube match link to load your VOD and start annotating.
+        </div>
+      </div>
+      <div class="draw-controls">
+        <div class="draw-color">
+          <label for="strokeColor">Draw Color</label>
+          <input type="color" id="strokeColor" value="#ff4655" style="border:none;background:transparent;width:48px;height:32px;padding:0;" />
+        </div>
+        <div class="thickness-control">
+          <label for="strokeWidth">Line Weight</label>
+          <input type="range" id="strokeWidth" min="2" max="14" step="1" value="3" />
+          <span id="strokeWidthValue">3px</span>
+        </div>
+        <div class="note-label">
+          <label for="noteText">Note Text</label>
+        </div>
+      </div>
+      <textarea id="noteText" placeholder="Write the takeaway for this timestamp..."></textarea>
+      <div class="video-controls">
+        <button id="saveNote">Save Note</button>
+        <button class="secondary" id="clearNote">Reset</button>
+      </div>
+      <div class="share-row">
+        <div class="share-link" id="shareLink">Load a video to get a shareable URL.</div>
+        <button class="secondary" id="copyLink">Copy Link</button>
+      </div>
+    </section>
+
+    <section class="panel notes-panel">
+      <h3 style="margin-top:0;">Notes</h3>
+      <div class="note-search">
+        <input type="text" id="noteSearch" placeholder="Search notes..." />
+      </div>
+      <div class="note-list" id="noteList"></div>
+    </section>
+  </main>
+
+  <script>
+    const script = document.createElement("script");
+    script.src = "https://www.youtube.com/iframe_api";
+    document.body.appendChild(script);
+
+    let player;
+    let currentVideoId = "";
+    let queuedVideoId = "";
+    let pendingStart = null;
+    let drawMode = false;
+    let isDrawing = false;
+    let currentStroke = [];
+    let currentStrokes = [];
+    let currentColor = document.getElementById("strokeColor").value;
+    let currentWidth = parseInt(document.getElementById("strokeWidth").value, 10) || 3;
+    let noteFilter = "";
+    const openComments = new Set();
+    let notes = [];
+    const canvas = document.getElementById("drawLayer");
+    const ctx = canvas.getContext("2d");
+    const videoShell = document.getElementById("videoShell");
+    const playerPlaceholder = document.getElementById("playerPlaceholder");
+
+    const showPlaceholder = () => {
+      playerPlaceholder?.classList.remove("hidden");
+    };
+    const hidePlaceholder = () => {
+      playerPlaceholder?.classList.add("hidden");
+    };
+    const requestVideoLoad = (videoId) => {
+      if (!videoId) return;
+      currentVideoId = videoId;
+      if (player && typeof player.loadVideoById === "function") {
+        player.loadVideoById(videoId);
+        hidePlaceholder();
+        queuedVideoId = "";
+      } else {
+        queuedVideoId = videoId;
+      }
+    };
+    const ensurePlayerSeekable = () =>
+      new Promise((resolve) => {
+        if (!player || typeof player.getPlayerState !== "function") {
+          resolve();
+          return;
+        }
+        if (player.getPlayerState() !== -1) {
+          resolve();
+          return;
+        }
+        const wasMuted = player.isMuted ? player.isMuted() : true;
+        if (!wasMuted && player.mute) player.mute();
+        if (player.playVideo) player.playVideo();
+        const waitForStart = () => {
+          if (!player || typeof player.getPlayerState !== "function") {
+            resolve();
+            return;
+          }
+          if (player.getPlayerState() !== -1) {
+            if (player.pauseVideo) player.pauseVideo();
+            if (!wasMuted && player.unMute) player.unMute();
+            resolve();
+            return;
+          }
+          requestAnimationFrame(waitForStart);
+        };
+        waitForStart();
+      });
+
+    const resizeCanvas = () => {
+      if (!videoShell) return;
+      const rect = videoShell.getBoundingClientRect();
+      canvas.width = rect.width;
+      canvas.height = rect.height;
+      if (activeNoteId) {
+        const note = notes.find((n) => n.id === activeNoteId);
+        if (note) {
+          renderStrokes(note.strokes);
+        }
+      } else {
+        renderStrokes(currentStrokes);
+      }
+    };
+
+    window.addEventListener("resize", resizeCanvas);
+    const ro = new ResizeObserver(() => {
+      resizeCanvas();
+    });
+    ro.observe(videoShell);
+    const renderStrokes = (strokes) => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      strokes.forEach((stroke) => {
+        ctx.beginPath();
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+        ctx.lineWidth = stroke.width || 3;
+        ctx.strokeStyle = stroke.color || "#ff4655";
+        stroke.path.forEach((point, idx) => {
+          const x = point.x * canvas.width;
+          const y = point.y * canvas.height;
+          if (idx === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        });
+        ctx.stroke();
+      });
+    };
+
+    let activeNoteId = null;
+
+    const enableDraw = () => {
+      canvas.style.pointerEvents = drawMode ? "auto" : "none";
+    };
+
+    const normalizePoint = (event) => {
+      const rect = canvas.getBoundingClientRect();
+      return {
+        x: (event.clientX - rect.left) / rect.width,
+        y: (event.clientY - rect.top) / rect.height
+      };
+    };
+
+    canvas.addEventListener("pointerdown", (event) => {
+      if (!drawMode) return;
+      isDrawing = true;
+      currentStroke = [];
+      const point = normalizePoint(event);
+      currentStroke.push(point);
+    });
+
+    document.getElementById("strokeColor").addEventListener("input", (event) => {
+      currentColor = event.target.value || "#ff4655";
+    });
+    const strokeWidthInput = document.getElementById("strokeWidth");
+    const strokeWidthValue = document.getElementById("strokeWidthValue");
+    strokeWidthInput.addEventListener("input", (event) => {
+      currentWidth = parseInt(event.target.value, 10) || 3;
+      strokeWidthValue.textContent = `${currentWidth}px`;
+    });
+    strokeWidthValue.textContent = `${currentWidth}px`;
+
+    canvas.addEventListener("pointermove", (event) => {
+      if (!drawMode || !isDrawing) return;
+      const point = normalizePoint(event);
+      currentStroke.push(point);
+      renderStrokes([...currentStrokes, { color: currentColor, width: currentWidth, path: currentStroke }]);
+    });
+
+    const finishStroke = () => {
+      if (!drawMode || !isDrawing) return;
+      isDrawing = false;
+      if (currentStroke.length > 0) {
+        currentStrokes.push({
+          color: currentColor,
+          width: currentWidth,
+          path: currentStroke.map((pt) => ({ ...pt }))
+        });
+      }
+      currentStroke = [];
+      renderStrokes(currentStrokes);
+    };
+    canvas.addEventListener("pointerup", finishStroke);
+    canvas.addEventListener("pointerleave", finishStroke);
+
+    const loadFromHash = () => {
+      const hash = window.location.hash.slice(1);
+      if (!hash) return;
+        try {
+          const decoded = JSON.parse(atob(decodeURIComponent(hash)));
+          if (decoded.videoId) {
+            requestVideoLoad(decoded.videoId);
+            document.getElementById("videoUrl").value = `https://youtu.be/${currentVideoId}`;
+          }
+        notes = (decoded.notes || []).map(normalizeNote);
+        openComments.clear();
+        noteFilter = "";
+        const searchInput = document.getElementById("noteSearch");
+        if (searchInput) searchInput.value = "";
+        renderNotes();
+      } catch (error) {
+        console.error("Invalid share link", error);
+      }
+    };
+
+    const updateShareLink = () => {
+      if (!currentVideoId) return;
+      const payload = encodeURIComponent(btoa(JSON.stringify({ videoId: currentVideoId, notes })));
+      const url = `${window.location.origin}${window.location.pathname}#${payload}`;
+      document.getElementById("shareLink").textContent = url;
+      document.getElementById("copyLink").onclick = async () => {
+        try {
+          await navigator.clipboard.writeText(url);
+          document.getElementById("copyLink").textContent = "Copied!";
+          setTimeout(() => (document.getElementById("copyLink").textContent = "Copy Link"), 1500);
+        } catch (error) {
+          console.error(error);
+        }
+      };
+    };
+
+    function onYouTubeIframeAPIReady() {
+      player = new YT.Player("playerContainer", {
+        height: "390",
+        width: "640",
+        videoId: "dQw4w9WgXcQ",
+        playerVars: { modestbranding: 1, rel: 0 },
+          events: {
+            onReady: () => {
+              resizeCanvas();
+              loadFromHash();
+              if (queuedVideoId) {
+                player.loadVideoById(queuedVideoId);
+                hidePlaceholder();
+                queuedVideoId = "";
+              } else if (!currentVideoId) {
+                showPlaceholder();
+              }
+            }
+          }
+        });
+    }
+    window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
+
+    const loadVideoFromInput = () => {
+      const url = document.getElementById("videoUrl").value.trim();
+        const idMatch = url.match(/[?&]v=([^&]+)/) || url.match(/youtu\.be\/([^?]+)/);
+        if (!idMatch) {
+          alert("Enter a valid YouTube URL.");
+          return;
+        }
+        requestVideoLoad(idMatch[1]);
+        notes = [];
+      openComments.clear();
+      noteFilter = "";
+      document.getElementById("noteSearch").value = "";
+      renderNotes();
+      updateShareLink();
+    };
+
+    document.getElementById("loadVideo").addEventListener("click", loadVideoFromInput);
+    document.getElementById("videoUrl").addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        loadVideoFromInput();
+      }
+    });
+
+    document.getElementById("noteSearch").addEventListener("input", (event) => {
+      noteFilter = event.target.value.toLowerCase();
+      renderNotes();
+    });
+
+    document.getElementById("markStart").addEventListener("click", () => {
+      if (!player) return;
+      pendingStart = player.getCurrentTime();
+      player.pauseVideo();
+      if (!drawMode) {
+        drawMode = true;
+        document.getElementById("toggleDraw").textContent = "Draw Mode On";
+        enableDraw();
+      }
+    });
+
+    document.getElementById("toggleDraw").addEventListener("click", (event) => {
+      drawMode = !drawMode;
+      event.target.textContent = drawMode ? "Draw Mode On" : "Draw Mode Off";
+      enableDraw();
+      if (!drawMode) {
+        currentStrokes = [];
+        renderStrokes(currentStrokes);
+      }
+    });
+
+    document.getElementById("clearCanvas").addEventListener("click", () => {
+      currentStrokes = [];
+      renderStrokes(currentStrokes);
+    });
+
+    document.getElementById("clearNote").addEventListener("click", () => {
+      pendingStart = null;
+      currentStrokes = [];
+      document.getElementById("noteText").value = "";
+      renderStrokes(currentStrokes);
+    });
+
+    document.getElementById("saveNote").addEventListener("click", () => {
+      if (!player || !currentVideoId) {
+        alert("Load a video first.");
+        return;
+      }
+      const text = document.getElementById("noteText").value.trim();
+      if (!text) {
+        alert("Write a note before saving.");
+        return;
+      }
+      const timestamp = pendingStart ?? player.getCurrentTime();
+      const note = {
+        id: crypto.randomUUID(),
+        time: timestamp,
+        text,
+        strokes: currentStrokes.map((stroke) => ({
+          color: stroke.color,
+          width: stroke.width || 3,
+          path: stroke.path.map((pt) => ({ ...pt }))
+        })),
+        comments: []
+      };
+      notes.push(normalizeNote(note));
+      notes.sort((a, b) => a.time - b.time);
+      renderNotes();
+      updateShareLink();
+      pendingStart = null;
+      currentStrokes = [];
+      document.getElementById("noteText").value = "";
+      renderStrokes(currentStrokes);
+      if (drawMode) {
+        drawMode = false;
+        document.getElementById("toggleDraw").textContent = "Draw Mode Off";
+        enableDraw();
+      }
+    });
+
+    const formatTime = (seconds) => {
+      const s = Math.max(0, Math.floor(seconds));
+      const mm = String(Math.floor(s / 60)).padStart(2, "0");
+      const ss = String(s % 60).padStart(2, "0");
+      return `${mm}:${ss}`;
+    };
+    const escapeHtml = (str = "") =>
+      str.replace(/[&<>"']/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]));
+    const normalizeNote = (note) => ({
+      id: note.id || crypto.randomUUID(),
+      time: note.time ?? note.start ?? 0,
+      text: note.text || "",
+      strokes: (note.strokes || []).map((stroke) => {
+        if (stroke.path) {
+          return {
+            color: stroke.color || "#ff4655",
+            width: stroke.width || 3,
+            path: stroke.path.map((pt) => ({ x: pt.x, y: pt.y }))
+          };
+        }
+        if (Array.isArray(stroke)) {
+          return { color: "#ff4655", width: 3, path: stroke.map((pt) => ({ x: pt.x, y: pt.y })) };
+        }
+        return {
+          color: stroke.color || "#ff4655",
+          width: stroke.width || 3,
+          path: (stroke.path || []).map((pt) => ({ x: pt.x, y: pt.y }))
+        };
+      }),
+      comments: (note.comments || []).map((comment) => ({
+        id: comment.id || crypto.randomUUID(),
+        text: comment.text || ""
+      }))
+    });
+
+    const renderNotes = () => {
+      const list = document.getElementById("noteList");
+      list.innerHTML = "";
+      const filtered = notes.filter((note) => {
+        if (!noteFilter) return true;
+        return (
+          note.text.toLowerCase().includes(noteFilter) ||
+          formatTime(note.time).toLowerCase().includes(noteFilter)
+        );
+      });
+      filtered.forEach((note) => {
+        const open = openComments.has(note.id);
+        const commentHtml =
+          note.comments.length > 0
+            ? note.comments
+                .map((comment) => `<div class="comment">${escapeHtml(comment.text)}</div>`)
+                .join("")
+            : '<div class="comment comment-empty">No replies yet.</div>';
+        const node = document.createElement("div");
+        node.className = "note" + (note.id === activeNoteId ? " active" : "");
+        node.innerHTML = `
+          <div class="note-header">
+            <span>${formatTime(note.time)}</span>
+            <div class="note-actions">
+              <button data-action="jump-view" data-id="${note.id}">View</button>
+              <button class="secondary" data-action="jump-play" data-id="${note.id}">Play</button>
+              <button class="secondary" data-action="delete" data-id="${note.id}">Delete</button>
+            </div>
+          </div>
+          <div>${escapeHtml(note.text)}</div>
+          <div class="note-comments">
+            <button class="note-comments-toggle secondary" data-action="toggle-comments" data-id="${note.id}">
+              Comments (${note.comments.length}) ${open ? "▲" : "▼"}
+            </button>
+            <div class="note-comments-body ${open ? "open" : "collapsed"}" data-comments="${note.id}">
+              <div class="comment-list">
+                ${commentHtml}
+              </div>
+              <textarea data-comment-input="${note.id}" placeholder="Reply..."></textarea>
+              <button class="secondary" data-action="add-comment" data-id="${note.id}">Add Comment</button>
+            </div>
+          </div>
+        `;
+        list.appendChild(node);
+      });
+    };
+
+    document.getElementById("noteList").addEventListener("click", async (event) => {
+      const action = event.target.dataset.action;
+      const id = event.target.dataset.id;
+      if (!action || !id) return;
+      const note = notes.find((n) => n.id === id);
+      if (!note) return;
+      if (action === "jump-view") {
+        await ensurePlayerSeekable();
+        player.seekTo(note.time, true);
+        player.pauseVideo();
+        activeNoteId = id;
+        currentStrokes = note.strokes.map((stroke) => ({
+          color: stroke.color || "#ff4655",
+          width: stroke.width || 3,
+          path: stroke.path.map((pt) => ({ ...pt }))
+        }));
+        renderStrokes(currentStrokes);
+        renderNotes();
+      } else if (action === "jump-play") {
+        await ensurePlayerSeekable();
+        player.seekTo(note.time, true);
+        activeNoteId = null;
+        currentStrokes = [];
+        renderStrokes(currentStrokes);
+        renderNotes();
+        player.playVideo();
+      } else if (action === "toggle-comments") {
+        if (openComments.has(id)) {
+          openComments.delete(id);
+        } else {
+          openComments.add(id);
+        }
+        renderNotes();
+      } else if (action === "add-comment") {
+        const noteCard = event.target.closest(".note");
+        if (!noteCard) return;
+        const textarea = noteCard.querySelector(`textarea[data-comment-input="${id}"]`);
+        if (!textarea) return;
+        const text = textarea.value.trim();
+        if (!text) return;
+        note.comments.push({ id: crypto.randomUUID(), text });
+        textarea.value = "";
+        openComments.add(id);
+        renderNotes();
+        updateShareLink();
+      } else if (action === "delete") {
+        notes = notes.filter((n) => n.id !== id);
+        if (activeNoteId === id) {
+          activeNoteId = null;
+          currentStrokes = [];
+          renderStrokes(currentStrokes);
+        }
+        openComments.delete(id);
+        renderNotes();
+        updateShareLink();
+      }
+    });
+
+    loadFromHash();
+  </script>
+</body>
+</html>
