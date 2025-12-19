@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-RW2CK761HX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-RW2CK761HX');
+</script>
+
+  <meta charset="UTF-8" />
+  <title>Valorant Recording & Tracker Toolkit for Ranks | ClutchCoach</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Record every Valorant match, sync it with tracker stats, and spot exactly what holds back your rank climb." />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #050711;
+      --surface: #0c111b;
+      --surface-soft: #131726;
+      --accent: #ff4655;
+      --text: #f9fafb;
+      --muted: #9ca3af;
+      --border: rgba(255,255,255,0.08);
+      --radius-lg: 18px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Inter", system-ui;
+      background: radial-gradient(circle at top, #13172b 0, #050711 50%, #010208 100%);
+      color: var(--text);
+    }
+    a { color: inherit; }
+    .page { min-height: 100vh; }
+    .shell { max-width: 860px; margin: 0 auto; padding: 32px 22px 80px; }
+    header.nav { display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--muted); margin-bottom: 24px; }
+    .nav-left { display: flex; align-items: center; gap: 12px; }
+    .nav-logo img { width: 44px; height: 44px; object-fit: contain; }
+    .nav-title { display: flex; flex-direction: column; text-transform: uppercase; color: var(--text); }
+    .nav-title span:first-child { letter-spacing: 0.18em; font-size: 18px; font-weight: 700; }
+    .nav-title span:last-child { letter-spacing: 0.12em; font-size: 12px; color: var(--muted); }
+    .nav-actions { display: flex; gap: 10px; }
+    .nav-actions a { padding: 8px 16px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.18); font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+    .contact-link { background: rgba(255,70,85,0.2); border-color: rgba(255,70,85,0.35); }
+    article { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 28px; box-shadow: 0 18px 38px rgba(0,0,0,0.45); }
+    h1 { font-size: clamp(30px, 4vw, 42px); letter-spacing: -0.03em; margin: 0 0 12px; }
+    .meta { font-size: 13px; text-transform: uppercase; letter-spacing: 0.16em; color: rgba(255,255,255,0.65); margin-bottom: 20px; }
+    h2 { margin-top: 26px; font-size: 22px; }
+    p { line-height: 1.7; color: var(--muted); }
+    ol, ul { color: var(--muted); line-height: 1.6; }
+    .tool-card {
+      background: var(--surface-soft);
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      padding: 16px;
+      margin: 16px 0;
+    }
+    .cta { margin-top: 32px; padding: 20px; border-radius: var(--radius-lg); border: 1px solid rgba(255,70,85,0.3); background: linear-gradient(120deg, rgba(255,70,85,0.18), rgba(5,7,17,0.9)); }
+    .cta a { display: inline-flex; margin-top: 12px; padding: 10px 24px; border-radius: 999px; background: var(--accent); color: var(--text); font-weight: 600; }
+    footer { text-align: center; font-size: 11px; color: var(--muted); margin-top: 32px; }
+    @media (max-width: 640px) {
+      header.nav { flex-direction: column; align-items: flex-start; gap: 12px; }
+      .nav-actions { width: 100%; }
+      .nav-actions a { flex: 1; text-align: center; }
+      article { padding: 22px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="shell">
+      <header class="nav">
+        <div class="nav-left">
+          <a class="nav-logo" href="/">
+            <img src="../../images/clutch-coach-logo.png" alt="ClutchCoach logo" />
+          </a>
+          <a class="nav-title" href="/">
+            <span>ClutchCoach</span>
+            <span>Valorant Video Review</span>
+          </a>
+        </div>
+        <div class="nav-actions">
+          <a class="contact-link" href="/contact">Contact</a>
+          <a class="nav-link" href="/blog/">Blog Home</a>
+        </div>
+      </header>
+
+      <article>
+        <div class="meta">Valorant Recording & Tracker</div>
+        <h1>Record Every Match and Use Tracker Data to Rank Up</h1>
+        <p>Every ranked game you play can become a coaching session when you record it, sync the footage to a Valorant tracker, and study the rank-defining stats. Here&rsquo;s a simple system I give to players who need proof of progress, not just vibes.</p>
+
+        <h2>Step 1: Capture High-Quality Valorant Recordings</h2>
+        <p>You only need two tools:</p>
+        <div class="tool-card">
+          <strong>OBS Studio (free)</strong>
+          <p>Set your base canvas to 1920x1080, use NVENC or AMF if you&rsquo;re on AMD, and bind start/stop recording to keys you never use in-game.</p>
+        </div>
+        <div class="tool-card">
+          <strong>NVIDIA ShadowPlay or AMD ReLive</strong>
+          <p>Great for clipping clutch rounds without massive files. Configure 5-minute instant replays so you always have the context leading to the fight.</p>
+        </div>
+        <p>Label each recording with <code>Map-Rank-Date</code> so you can correlate it with tracker sessions later.</p>
+
+        <h2>Step 2: Pair Footage With a Valorant Tracker</h2>
+        <p>Open your tracker of choice (Tracker.gg, Blitz, Dak.gg) and tag the same match. Export or screenshot these Valorant stats:</p>
+        <ul>
+          <li><strong>First blood attempts vs. success</strong> &mdash; reveals whether your entries are worth the risk.</li>
+          <li><strong>Damage per round and assist %</strong> &mdash; makes sure utility players earn value.</li>
+          <li><strong>Round-by-round economy decisions</strong> &mdash; highlight save vs. buy mistakes.</li>
+        </ul>
+        <p>Drop these numbers directly into the recording description or a shared Google Doc. Now every time you hit play, the data is right above the video.</p>
+
+        <h2>Step 3: Create Rank-Specific Checklists</h2>
+        <p>Valorant ranks aren&rsquo;t just Elo; they represent decision quality. Build a checklist for your current rank:</p>
+        <ol>
+          <li><strong>Gold/Silver:</strong> Maintain full util usage before every site hit, stop dry swinging, record at least one defensive setup per map.</li>
+          <li><strong>Platinum/Diamond:</strong> Track mid-round rotations and trades. Compare tracker econ graphs vs. your plan.</li>
+          <li><strong>Ascendant+:</strong> Record comms plus POV, then align the tracker&rsquo;s kill feed with actual timing to see if you react fast enough.</li>
+        </ol>
+
+        <h2>Step 4: Share Recordings for Feedback</h2>
+        <p>Drop the Valorant recording + tracker notes to a coach or friend. Ask for three timestamps: a round where you over-faced, one where aim broke down, and one where you could have closed the map faster. These targeted Valorant tips save hours of pointless grinding.</p>
+
+        <div class="cta">
+          <strong>Want a done-for-you review?</strong>
+          <p>I watch your recording, cross-check tracker data, and send a timeline of fixes so the next time you queue, you know precisely what to change.</p>
+          <a href="/">Get a review</a>
+        </div>
+      </article>
+
+      <footer>
+        Not affiliated with Riot Games.
+      </footer>
+    </div>
+  </div>
+</body>
+</html>
