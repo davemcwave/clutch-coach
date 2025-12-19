@@ -315,6 +315,33 @@
       height: 100%;
       object-fit: cover;
       display: block;
+      background: #000;
+    }
+    .preview-video video:fullscreen,
+    .preview-video video:-webkit-full-screen {
+      object-fit: contain;
+      background: #000;
+    }
+    .fullscreen-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.25);
+      background: rgba(0,0,0,0.45);
+      color: var(--text);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.2s ease;
+      z-index: 3;
+      pointer-events: auto;
+    }
+    .fullscreen-btn:hover {
+      background: rgba(0,0,0,0.65);
     }
     .carousel-controls {
       position: absolute;
@@ -623,6 +650,7 @@
             <div class="carousel-track">
               <div class="preview-slide is-active">
                 <div class="preview-video">
+                  <button class="fullscreen-btn" type="button" data-fullscreen aria-label="View fullscreen">&#x26F6;</button>
                   <div class="preview-overlay"></div>
                   <div class="preview-screen">
                     <video autoplay muted loop playsinline data-slide-video>
@@ -635,6 +663,7 @@
               </div>
               <div class="preview-slide">
                 <div class="preview-video">
+                  <button class="fullscreen-btn" type="button" data-fullscreen aria-label="View fullscreen">&#x26F6;</button>
                   <div class="preview-overlay"></div>
                   <div class="preview-screen">
                     <video autoplay muted loop playsinline data-slide-video>
@@ -647,6 +676,7 @@
               </div>
               <div class="preview-slide">
                 <div class="preview-video">
+                  <button class="fullscreen-btn" type="button" data-fullscreen aria-label="View fullscreen">&#x26F6;</button>
                   <div class="preview-overlay"></div>
                   <div class="preview-screen">
                     <video autoplay muted loop playsinline data-slide-video>
@@ -935,7 +965,56 @@
         focusSlide(0);
       };
 
+      const setupFullscreenButtons = () => {
+        const buttons = document.querySelectorAll("[data-fullscreen]");
+        if (!buttons.length) return;
+
+        const requestFullscreen = (target) => {
+          if (!target) return false;
+          const request =
+            target.requestFullscreen ||
+            target.webkitRequestFullscreen ||
+            target.msRequestFullscreen ||
+            target.mozRequestFullScreen;
+
+          if (request) {
+            try {
+              const result = request.call(target);
+              if (result && typeof result.catch === "function") {
+                result.catch(() => {});
+              }
+              return true;
+            } catch (error) {
+              console.error(error);
+            }
+          }
+          return false;
+        };
+
+        const enterFullscreen = (video, wrapper) => {
+          if (!video && !wrapper) return;
+          if (requestFullscreen(video)) return;
+          if (requestFullscreen(wrapper)) return;
+          if (video && typeof video.webkitEnterFullscreen === "function") {
+            try {
+              video.webkitEnterFullscreen();
+            } catch (error) {
+              console.error(error);
+            }
+          }
+        };
+
+        buttons.forEach((button) => {
+          button.addEventListener("click", () => {
+            const wrapper = button.closest(".preview-video");
+            const video = wrapper?.querySelector("video");
+            enterFullscreen(video, wrapper);
+          });
+        });
+      };
+
       setupPreviewCarousel();
+      setupFullscreenButtons();
     </script>
 </body>
 </html>
